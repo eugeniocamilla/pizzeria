@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love 4 Pizza | Pizzeria Roma</title>
+    <!-- Tailwind CSS per il design veloce e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#e63946',
+                            dark: '#1d3557',
+                            light: '#f1faee',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+        }
+        .menu-dots {
+            flex-grow: 1;
+            border-bottom: 2px dotted #ccc;
+            margin: 0 10px;
+            position: relative;
+            top: -6px;
+        }
+        /* Pulsante WhatsApp fluttuante */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Modal Tabs */
+        .tab-btn.active {
+            color: #e63946;
+            border-bottom: 2px solid #e63946;
+        }
+
+        /* AI Chatbot Styles */
+        #ai-chatbot {
+            position: fixed;
+            bottom: 110px;
+            right: 40px;
+            width: 350px;
+            max-height: 500px;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            z-index: 101;
+            transform: translateY(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            border: 1px solid rgba(229, 231, 235, 0.6);
+        }
+
+        #ai-chatbot.show {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: #e63946;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fafafa;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            background: #fff;
+            border: 1px solid #eee;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user {
+            background: #1d3557;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: white;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .chat-input:focus {
+            border-color: #e63946;
+        }
+
+        .chat-send-btn {
+            background: #e63946;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: #c5303c;
+        }
+
+        .ai-toggle-btn {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 110px;
+            right: 40px;
+            background-color: #e63946;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 24px;
+            box-shadow: 2px 2px 15px rgba(230, 57, 70, 0.4);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .ai-toggle-btn:hover {
+            transform: scale(1.1);
+            background-color: #c5303c;
+        }
+
+        @media (max-width: 768px) {
+            .ai-toggle-btn {
+                bottom: 80px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            #ai-chatbot {
+                bottom: 20px;
+                right: 20px;
+                width: calc(100% - 40px);
+                max-height: 60vh;
+            }
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            gap: 5px;
+        }
+        
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #ccc;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Nuove animazioni per il bottone AI */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(230, 57, 70, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+        }
+        .ai-pulse {
+            animation: pulse-red 2s infinite;
+        }
+
+        /* Hide Scrollbar per i tag a scorrimento */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 antialiased">
+
+    <header class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-2xl font-serif font-bold text-brand-dark flex items-center">
+                <i class="fa-solid fa-heart text-brand-red mr-2"></i>Love 4 Pizza
+            </div>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-gray-600 hover:text-brand-red font-medium transition">Home</a>
+                <a href="#menu" class="text-gray-600 hover:text-brand-red font-medium transition">Menu</a>
+                <a href="#info" class="text-gray-600 hover:text-brand-red font-medium transition">Info & Orari</a>
+                <a href="tel:+390666415770" class="bg-brand-red text-white px-5 py-2 rounded-full font-medium hover:bg-red-700 transition shadow-md">
+                    <i class="fa-solid fa-phone mr-2"></i>Chiama
+                </a>
+            </nav>
+            <!-- Mobile menu button -->
+            <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-800 focus:outline-none p-2">
+                <i class="fa-solid fa-bars transition-all duration-300"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-gray-100 flex flex-col p-4 space-y-4 md:hidden">
+            <a href="#home" class="mobile-link text-gray-800 font-medium text-lg border-b border-gray-50 pb-2">Home</a>
+            <a href="#menu" class="mobile-link text-gray-800 font-medium text-lg border-b border-gray-50 pb-2">Menu</a>
+            <a href="#info" class="mobile-link text-gray-800 font-medium text-lg border-b border-gray-50 pb-2">Info & Orari</a>
+            <a href="tel:+390666415770" class="bg-brand-red text-white px-5 py-3 rounded-full font-medium text-center shadow-md">
+                <i class="fa-solid fa-phone mr-2"></i>Chiama Ora
+            </a>
+        </div>
+    </header>
+
+    <section id="home" class="relative h-screen flex items-center justify-center bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=2000');">
+        <div class="absolute inset-0 hero-overlay"></div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
+            <div class="flex justify-center mb-4 text-yellow-400 text-2xl">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                <span class="text-white ml-2 text-lg font-medium">4.7 (146 recensioni)</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-4 leading-tight shadow-sm">
+                Love 4 Pizza<br><span class="text-3xl md:text-5xl text-brand-light font-sans font-light">Di Alossi Giuseppe</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-light">
+                La tua pizzeria di fiducia a Roma (Via Peveragno, 52). Pizza da asporto e consegna a domicilio sempre puntuale!
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#menu" class="bg-brand-red text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-red-700 transition shadow-lg">
+                    Guarda il Menu
+                </a>
+                <a href="https://www.justeat.it/restaurants-love-4-pizza-roma/menu" target="_blank" class="bg-white text-brand-dark px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg flex items-center justify-center">
+                    <i class="fa-solid fa-motorcycle mr-2 text-brand-red"></i> Ordina su Just Eat
+                </a>
+                <a href="tel:+390666415770" class="bg-white text-brand-dark px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg flex items-center justify-center">
+                    <i class="fa-solid fa-phone mr-2"></i> 06 6641 5770
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12">
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="text-4xl text-brand-red mb-4"><i class="fa-solid fa-pizza-slice"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Pizze e Fritti Ottimi</h3>
+                    <p class="text-gray-600">Condimenti abbondanti e pasta lievitata a regola d'arte. Da provare i nostri fritti artigianali.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="text-4xl text-brand-red mb-4"><i class="fa-solid fa-motorcycle"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Consegna Sempre Puntuale</h3>
+                    <p class="text-gray-600">Servizio d'asporto e consegne a domicilio rapide e affidabili nel quartiere.</p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="text-4xl text-brand-red mb-4"><i class="fa-solid fa-pepper-hot"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Specialità Calabresi</h3>
+                    <p class="text-gray-600">Scopri la nostra Nduja DOP e i sapori intensi. Il Supplì alla Nduja è un must assoluto!</p>
+                </div>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-brand-light p-8 rounded-2xl border-l-4 border-brand-red shadow-sm italic text-center">
+                <p class="text-xl text-gray-700 mb-4">"Pizza e fritti ottimi, condimenti ottimi e abbondanti. Ormai clienti fissi soprattutto per pizza da asporto e consegne."</p>
+                <div class="font-bold text-brand-dark">- Andrea Molinara</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="text-center mb-16">
+                <span class="text-brand-red font-bold tracking-wider uppercase text-sm mb-2 block">Scopri i nostri sapori</span>
+                <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">I Più Amati</h2>
+                <p class="text-gray-500 text-lg">Le scelte preferite dai nostri clienti. Qualità e gusto insuperabili.</p>
+            </div>
+
+            <div class="mb-12 bg-white p-8 md:p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_20px_40px_rgb(230,57,70,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-red-50/50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110"></div>
+                
+                <div class="flex items-center mb-8 border-b border-gray-100 pb-6">
+                    <div class="bg-red-50 text-brand-red w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mr-5 shadow-sm transform group-hover:rotate-12 transition-transform duration-300">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="text-3xl font-serif font-bold text-gray-800 tracking-tight">I Nostri Cavalli di Battaglia</h3>
+                </div>
+                
+                <div class="space-y-8">
+                    <!-- Pizze -->
+                    <div class="menu-item-group hover:translate-x-2 transition-transform">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xl font-semibold text-gray-800">Love 4 Pizza <span class="align-middle text-[10px] uppercase font-bold tracking-wider bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 px-2 py-1 rounded-md ml-2 shadow-sm border border-yellow-300/30">Top</span></h4>
+                            <div class="menu-dots transition-colors"></div>
+                            <span class="text-xl font-black text-brand-red">€ 8,50</span>
+                        </div>
+                        <p class="text-gray-500 text-sm md:text-base pr-16 leading-relaxed">Mozzarella, nduja e funghi porcini</p>
+                    </div>
+
+                    <div class="menu-item-group hover:translate-x-2 transition-transform">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xl font-semibold text-gray-800">Calabra</h4>
+                            <div class="menu-dots transition-colors"></div>
+                            <span class="text-xl font-black text-brand-red">€ 9,00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm md:text-base pr-16 leading-relaxed">Mozzarella, pomodoro Pachino, funghi porcini, bresaola, rucola e scaglie di parmigiano</p>
+                    </div>
+
+                    <div class="menu-item-group hover:translate-x-2 transition-transform">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xl font-semibold text-gray-800">Bomba</h4>
+                            <div class="menu-dots transition-colors"></div>
+                            <span class="text-xl font-black text-brand-red">€ 8,00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm md:text-base pr-16 leading-relaxed">Pomodoro, mozzarella, patate, melanzane, zucchine e peperoni fritti</p>
+                    </div>
+
+                    <!-- Fritti -->
+                    <div class="menu-item-group hover:translate-x-2 transition-transform pt-4 border-t border-gray-50">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xl font-semibold text-gray-800">Supplì</h4>
+                            <div class="menu-dots transition-colors"></div>
+                            <span class="text-xl font-black text-brand-red">€ 1,00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm md:text-base pr-16 leading-relaxed">Il classico fritto romano</p>
+                    </div>
+
+                    <div class="menu-item-group hover:translate-x-2 transition-transform">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xl font-semibold text-gray-800">Arancino Nduja <span class="align-middle text-[10px] uppercase font-bold tracking-wider bg-gradient-to-r from-red-100 to-red-200 text-red-800 px-2 py-1 rounded-md ml-2 shadow-sm border border-red-300/30">Piccante</span></h4>
+                            <div class="menu-dots transition-colors"></div>
+                            <span class="text-xl font-black text-brand-red">€ 1,50</span>
+                        </div>
+                        <p class="text-gray-500 text-sm md:text-base pr-16 leading-relaxed">Il sapore intenso della Calabria</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button id="openModalBtn" class="group bg-gray-900 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-brand-red transition-colors duration-300 shadow-xl hover:shadow-red-500/30 w-full sm:w-auto relative overflow-hidden">
+                    <span class="relative z-10 flex items-center justify-center">
+                        <i class="fa-solid fa-book-open mr-3 group-hover:animate-bounce"></i> Esplora il Menu Completo
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer id="info" class="bg-brand-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-gray-700 pb-12">
+                <div>
+                    <h3 class="text-xl font-serif font-bold mb-4 text-brand-red"><i class="fa-regular fa-clock mr-2"></i>Orari</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between border-b border-gray-700 pb-1"><span>Tutti i giorni:</span> <span>Aperto fino alle 21:30</span></li>
+                    </ul>
+                    <div class="mt-4 inline-block bg-green-900/50 text-green-400 px-3 py-1 rounded text-sm border border-green-800">
+                        <i class="fa-solid fa-check-circle mr-1"></i> Asporto & Consumazione sul posto
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-serif font-bold mb-4 text-brand-red"><i class="fa-solid fa-location-dot mr-2"></i>Dove Siamo</h3>
+                    <p class="text-gray-300 mb-2 font-bold">Love 4 Pizza</p>
+                    <p class="text-gray-300 mb-4">Via Peveragno, 52<br>00166 Roma RM</p>
+                    <a href="https://maps.google.com/?q=Via+Peveragno+52+Roma" target="_blank" class="text-sm bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition flex items-center inline-flex">
+                        <i class="fa-solid fa-map mr-2"></i> Apri in Maps
+                    </a>
+                </div>
+                <div>
+                    <h3 class="text-xl font-serif font-bold mb-4 text-brand-red"><i class="fa-solid fa-phone-volume mr-2"></i>Ordina Ora</h3>
+                    <p class="text-gray-300 mb-2">Chiama per asporto o consegna a domicilio:</p>
+                    <a href="tel:+390666415770" class="text-3xl font-bold text-white hover:text-brand-red block mb-4 transition">
+                        <i class="fa-solid fa-phone fa-sm mr-2 text-brand-red"></i>06 6641 5770
+                    </a>
+                    <a href="https://www.justeat.it/restaurants-love-4-pizza-roma/menu" target="_blank" class="inline-block mt-2 bg-[#ff8000] text-white px-6 py-2 rounded-full font-bold hover:bg-[#e67300] transition shadow-md">
+                        <i class="fa-solid fa-motorcycle mr-2"></i> Ordina su Just Eat
+                    </a>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
+                <p>&copy; 2026 Love 4 Pizza Di Alossi Giuseppe. Tutti i diritti riservati.</p>
+                <p class="mt-2 md:mt-0 flex items-center">
+                    Gestito con <i class="fa-solid fa-shield-halved mx-1 text-gray-400"></i> da <span class="text-gray-300 font-bold ml-1">La Tua Agenzia WaaS</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/390666415770?text=Ciao!%20Vorrei%20ordinare%20delle%20pizze%20da%20asporto." target="_blank" class="whatsapp-float" aria-label="Ordina su WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- AI Chatbot Toggle Button -->
+    <button class="ai-toggle-btn ai-pulse" id="aiToggleBtn" aria-label="Consigliere AI">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <!-- AI Chatbot Interface -->
+    <div id="ai-chatbot">
+        <div class="chat-header">
+            <span>🍕 Pizza Consigliere AI</span>
+            <button id="closeChatBtn" class="text-white hover:text-gray-200 focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="chat-messages custom-scrollbar" id="chatMessages">
+            <div class="message bot">
+                Ciao! Sono il tuo assistente virtuale di Love 4 Pizza. Non sai cosa scegliere? Dimmi cosa ti piace (es. "Voglio qualcosa di piccante" o "Sono vegetariano") e ti consiglierò la pizza perfetta!
+            </div>
+            <!-- Messages will be added here -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <!-- Quick replies per evitare crash utente -->
+        <div id="quickReplies" class="flex gap-2 p-2 overflow-x-auto hide-scroll bg-gray-50 border-t border-gray-100">
+            <button class="quick-reply-btn bg-white text-brand-dark text-xs px-3 py-1.5 rounded-full border border-gray-100 shadow-sm hover:bg-brand-red hover:text-white transition whitespace-nowrap" data-msg="Consigliami una pizza piccante! 🌶️">Piccante 🌶️</button>
+            <button class="quick-reply-btn bg-white text-brand-dark text-xs px-3 py-1.5 rounded-full border border-gray-100 shadow-sm hover:bg-brand-red hover:text-white transition whitespace-nowrap" data-msg="Avete opzioni vegetariane? 🥬">Vegetariano 🥬</button>
+            <button class="quick-reply-btn bg-white text-brand-dark text-xs px-3 py-1.5 rounded-full border border-gray-100 shadow-sm hover:bg-brand-red hover:text-white transition whitespace-nowrap" data-msg="Qual è la vostra pizza speciale? ⭐">Specialità ⭐</button>
+            <button class="quick-reply-btn bg-white text-brand-dark text-xs px-3 py-1.5 rounded-full border border-gray-100 shadow-sm hover:bg-brand-red hover:text-white transition whitespace-nowrap" data-msg="Quali fritti mi consigli? 🍘">Fritti 🍘</button>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Chiedimi un consiglio..." autocomplete="off">
+            <button id="sendMessageBtn" class="chat-send-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="menuModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300">
+            <!-- Header Modal -->
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-2xl font-serif font-bold text-brand-dark">Menu Completo</h3>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-brand-red transition text-2xl focus:outline-none">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Body Modal -->
+            <div class="p-0 overflow-hidden flex flex-col h-full">
+                
+                <!-- TABS AGGIORNATE: Ora vanno a capo (flex-wrap) e si vedono tutte da mobile -->
+                <div class="flex flex-wrap border-b border-gray-200 bg-gray-50 text-center">
+                    <button class="tab-btn active px-3 py-3 font-medium text-sm w-1/2 sm:w-auto border-r border-b sm:border-0 border-gray-200" data-target="tab-classiche">Classiche</button>
+                    <button class="tab-btn px-3 py-3 font-medium text-sm text-gray-500 w-1/2 sm:w-auto border-b sm:border-0 border-gray-200" data-target="tab-pala">Alla Pala</button>
+                    <button class="tab-btn px-3 py-3 font-medium text-sm text-gray-500 w-1/2 sm:w-auto border-r border-b sm:border-0 border-gray-200" data-target="tab-fritti">Fritti & Dolci</button>
+                    <button class="tab-btn px-3 py-3 font-medium text-sm text-gray-500 w-1/2 sm:w-auto border-b sm:border-0 border-gray-200" data-target="tab-sfizi">Focacce & Varie</button>
+                    <button class="tab-btn px-3 py-3 font-medium text-sm text-gray-500 w-full sm:w-auto" data-target="tab-bevande">Bevande & Birre</button>
+                </div>
+
+                <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+                    
+                    <!-- TAB: PIZZE CLASSICHE -->
+                    <div id="tab-classiche" class="tab-content">
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-pizza-slice mr-2"></i>Pizze Classiche (47)</h4>
+                        <div class="space-y-4 mb-6">
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Rossa</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 5,00</span></div><p class="text-xs text-gray-500">pomodoro e olio</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Marinara</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 5,50</span></div><p class="text-xs text-gray-500">pomodoro, origano, aglio e olio</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Margherita</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,00</span></div><p class="text-xs text-gray-500">pomodoro e mozzarella</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Funghi</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e funghi champignon</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Melanzane</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, melanzane e parmigiano</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Patate</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella e patate al forno</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Zucchine</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella e zucchine</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Radicchio</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella, radicchio, provola affumicata e salsa di aceto balsamico</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Napoli</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e alici</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Wurstel</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e wurstel</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Salsiccia</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e salsiccia</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Crostino al Prosciutto Cotto</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella e prosciutto cotto</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">4 Formaggi</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella, provola, parmigiano e gorgonzola</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Funghi e Provola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella, provola affumicata e funghi champignon</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Diavola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e salame piccante</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Radicchio e Gorgonzola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella, radicchio e gorgonzola DOP</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Asterix</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella, pomodoro Pachino e zucchine</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Crostino al Prosciutto Crudo</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div><p class="text-xs text-gray-500">mozzarella e prosciutto crudo</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Cafona</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">mozzarella, patate al forno e salsiccia</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Boscaiola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">mozzarella, funghi e salsiccia</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Funghi e Prosciutto Cotto</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">mozzarella, funghi champignon e prosciutto cotto</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Romeo</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">mozzarella, zucchine e prosciutto cotto</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Nduja</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e nduja DOP</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Wurstel e Patatine Fritte</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, wurstel e patatine fritte</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">San Daniele</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella e prosciutto crudo</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Ortolana</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella e verdure miste</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Tonno e Pachino</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, pomodoro Pachino, tonno e peperoncino di Calabria</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Tonno e Cipolla</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, tonno e cipolla di Tropea</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Fiori e Alici</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, fiori di zucca e alici</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Fiori e Prosciutto Cotto</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, fiori di zucca e prosciutto cotto</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Bomba</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, patate, melanzane, zucchine e peperoni fritti</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Mediterranea</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, tonno e carciofi</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Broccoletti e Salsiccia</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, broccoletti ripassati e salsiccia di Norcia</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Funghi Porcini</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, funghi porcini e prezzemolo</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Diavola con Nduja</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, salame piccante DOP e nduja</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Speck e Provola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, speck e provola affumicata DOP</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Verdemare</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div><p class="text-xs text-gray-500">mozzarella, zucchine e gamberetti</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Capricciosa</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella, funghi champignon, carciofini, olive, prosciutto cotto e uova</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Rosata</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">pomodoro, insalata, gamberetti e salsa rosa</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Mozzarella di Bufala e Pomodoro Pachino</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">pomodoro, mozzarella di bufala DOP e pomodoro Pachino</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Stracchino e Pancetta</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">mozzarella, stracchino e pancetta arrotolata</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Obelix</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">mozzarella, fiori di zucca e prosciutto cotto</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Bresaola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">mozzarella, rucola, bresaola e scaglie di parmigiano</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Love 4 Pizza</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">mozzarella, nduja e funghi porcini</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Salmone</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,50</span></div><p class="text-xs text-gray-500">mozzarella, rucola e salmone affumicato</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Calabra</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 9,00</span></div><p class="text-xs text-gray-500">mozzarella, pomodoro Pachino, funghi porcini, bresaola, rucola e scaglie di parmigiano</p></div>
+                            <div><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Gustosa</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 9,00</span></div><p class="text-xs text-gray-500">pomodoro, provola affumicata, speck, funghi porcini e prezzemolo</p></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: PIZZE ALLA PALA -->
+                    <div id="tab-pala" class="tab-content hidden">
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-pizza-slice mr-2"></i>Pizze alla Pala</h4>
+                        <ul class="mb-6 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Bianca alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 8,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Rossa alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 9,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Margherita alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 13,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Funghi alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 13,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Zucchine alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 13,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Patate alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 13,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Melanzane alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 13,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Crostino alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Boscaiola alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Napoli alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Cafona alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Diavola alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Salsiccia alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 15,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Wurstel e Patatine alla Pala</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 16,00</span></div></li>
+                        </ul>
+                    </div>
+
+                    <!-- TAB: FRITTI & DOLCI -->
+                    <div id="tab-fritti" class="tab-content hidden">
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-fire mr-2"></i>Fritti</h4>
+                        <ul class="mb-8 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Supplì</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Crocchette di Patate</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Crocchette di Melanzane</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Arancino Cacio e Pepe</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Arancino Nduja</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Fiori di Zucca</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,80</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Filetto di Baccalà</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Olive Ascolane</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,50</span></div><p class="text-xs text-gray-500">4 pezzi</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Mozzarelline</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,50</span></div><p class="text-xs text-gray-500">6 pezzi</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Patatine Fritte</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 3,00</span></div></li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-cookie-bite mr-2"></i>Dolci</h4>
+                        <ul class="mb-6 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Nutella</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Pizza alla Pala con Nutella</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 16,00</span></div></li>
+                        </ul>
+                    </div>
+
+                    <!-- TAB: FOCACCE, PANINI & INSALATE -->
+                    <div id="tab-sfizi" class="tab-content hidden">
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-bread-slice mr-2"></i>Focacce</h4>
+                        <ul class="mb-8 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia Semplice</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 4,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia Rosmarino</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 4,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Prosciutto Crudo</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Stracchino e Prosciutto Cotto</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Tonno, Maionese e Carciofini</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Philadelphia, Prosciutto Cotto e Melanzane Gratinate</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Bresaola, Rughetta e Scaglie di Parmigiano</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Focaccia con Stracchino, Salmone e Rucola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,00</span></div></li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-burger mr-2"></i>Calzoni & Panini</h4>
+                        <ul class="mb-8 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Calzone Ripieno</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Panino</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,50</span></div></li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-leaf mr-2"></i>Insalate</h4>
+                        <ul class="mb-6 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Insalata Classica</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 6,00</span></div><p class="text-xs text-gray-500">insalata mista, pomodoro Pachino, olive, mais, mozzarella fiordilatte, tonno e glassa di aceto balsamico</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Insalata Bresaola</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">bresaola, rucola, scaglie di parmigiano e glassa di aceto balsamico</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Insalata con Salmone</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">insalata, rucola, mais, salmone e philadelphia</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Insalata con Gamberetti</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 7,50</span></div><p class="text-xs text-gray-500">insalata, rucola, mais, tonno e gamberetti</p></li>
+                        </ul>
+                    </div>
+
+                    <!-- TAB: BEVANDE & BIRRE -->
+                    <div id="tab-bevande" class="tab-content hidden">
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-bottle-water mr-2"></i>Bevande</h4>
+                        <ul class="mb-8 space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Acqua Naturale</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">da € 1,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Acqua Frizzante</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">da € 1,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Coca-Cola Sleek 33cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div><p class="text-xs text-gray-500">330ml</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Coca-Cola Zero Can 33 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div><p class="text-xs text-gray-500">330ml</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Fanta Original Sleek 33 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Fanta Original PET 45 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,80</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">FUZE TEA, Tè alla Pesca e Rosa 400ml</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,80</span></div><p class="text-xs text-gray-500">400ml</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">FUZE TEA, Tè al Limone e Lemongrass PET 400 ml</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,80</span></div><p class="text-xs text-gray-500">400ml</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">COCA-COLA Original Taste PET 1,5 L</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 3,00</span></div></li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-red mb-4 border-b pb-1 text-lg"><i class="fa-solid fa-beer-mug-empty mr-2"></i>Birre (18+)</h4>
+                        <ul class="space-y-4">
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Birra 33cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">da € 2,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Peroni 33 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 1,50</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Peroni Nastro Azzurro Italiana 33 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,00</span></div></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Peroni Birra 66 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,00</span></div><p class="text-xs text-gray-500">4,7% vol</p></li>
+                            <li><div class="flex justify-between items-end"><span class="font-medium text-gray-800">Peroni Nastro Azzurro Birra 62 cl</span> <div class="menu-dots"></div> <span class="font-bold text-brand-dark">€ 2,50</span></div></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Footer Modal -->
+            <div class="p-5 border-t border-gray-100 bg-gray-50 rounded-b-2xl text-center">
+                <a href="tel:+390666415770" class="bg-brand-red text-white px-8 py-3 rounded-full font-bold hover:bg-red-700 transition shadow-md inline-block w-full sm:w-auto">
+                    <i class="fa-solid fa-phone mr-2"></i>Chiama per ordinare
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAZIONE CLIENTE (Basta cambiare queste variabili per un nuovo sito!)
+        const SITE_CONFIG = {
+            name: "Love 4 Pizza",
+            owner: "Alossi Giuseppe",
+            phone: "+393332400313",
+            whatsappLink: "https://wa.me/390666415770?text=Ciao! Vorrei ordinare...",
+            address: "Via Peveragno, 52, 00166 Roma RM",
+            mapsLink: "https://maps.google.com/?q=Via+Peveragno+52+Roma",
+            justEatLink: "https://www.justeat.it/restaurants-love-4-pizza-roma/menu"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            const menuIcon = mobileMenuBtn.querySelector('i');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                if (isHidden) {
+                    mobileMenu.classList.remove('hidden');
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-xmark');
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                });
+            });
+
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const menuModal = document.getElementById('menuModal');
+            const modalContent = menuModal.querySelector('.max-w-3xl');
+
+            function openModal() {
+                menuModal.classList.remove('hidden');
+                void menuModal.offsetWidth;
+                menuModal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                menuModal.classList.add('opacity-0');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    menuModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+
+            openModalBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            menuModal.addEventListener('click', (e) => {
+                if (e.target === menuModal) closeModal();
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !menuModal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => {
+                        b.classList.remove('active', 'text-brand-red');
+                        b.classList.add('text-gray-500');
+                    });
+                    tabContents.forEach(c => c.classList.add('hidden'));
+
+                    btn.classList.add('active', 'text-brand-red');
+                    btn.classList.remove('text-gray-500');
+
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.remove('hidden');
+                    
+                    modalContent.querySelector('.custom-scrollbar').scrollTop = 0;
+                });
+            });
+
+            const aiToggleBtn = document.getElementById('aiToggleBtn');
+            const aiChatbot = document.getElementById('ai-chatbot');
+            const closeChatBtn = document.getElementById('closeChatBtn');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            // API Configuration for Gemini
+            const apiKey = ""; // Canvas will provide this
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            // Context about the menu for the LLM
+            const menuContext = `
+            Sei l'assistente AI della pizzeria "Love 4 Pizza" a Roma (Via Peveragno 52). Il tuo compito è consigliare pizze e fritti dal menu in base alle richieste dei clienti. Sii cordiale, conciso e goloso nelle tue descrizioni.
+            
+            Ecco il menu delle Pizze Classiche:
+            - Rossa (pomodoro, olio) - € 5,00
+            - Marinara (pomodoro, origano, aglio, olio) - € 5,50
+            - Margherita (pomodoro e mozzarella) - € 6,00
+            - Funghi (pomodoro, mozzarella e funghi champignon) - € 6,50
+            - Melanzane (pomodoro, mozzarella, melanzane e parmigiano) - € 7,00
+            - Patate (mozzarella e patate al forno) - € 7,00
+            - Zucchine (mozzarella e zucchine) - € 7,00
+            - Radicchio (mozzarella, radicchio, provola affumicata e salsa di aceto balsamico) - € 7,00
+            - Napoli (pomodoro, mozzarella e alici) - € 7,00
+            - Wurstel (pomodoro, mozzarella e wurstel) - € 7,00
+            - Salsiccia (pomodoro, mozzarella e salsiccia) - € 7,00
+            - Crostino al Prosciutto Cotto (mozzarella e prosciutto cotto) - € 7,00
+            - 4 Formaggi (mozzarella, provola, parmigiano e gorgonzola) - € 7,00
+            - Funghi e Provola (mozzarella, provola affumicata e funghi champignon) - € 7,00
+            - Diavola (pomodoro, mozzarella e salame piccante) - € 7,00
+            - Radicchio e Gorgonzola (mozzarella, radicchio e gorgonzola DOP) - € 7,00
+            - Asterix (mozzarella, pomodoro Pachino e zucchine) - € 7,00
+            - Crostino al Prosciutto Crudo (mozzarella e prosciutto crudo) - € 7,00
+            - Cafona (mozzarella, patate al forno e salsiccia) - € 7,50
+            - Boscaiola (mozzarella, funghi e salsiccia) - € 7,50
+            - Funghi e Prosciutto Cotto (mozzarella, funghi champignon e prosciutto cotto) - € 7,50
+            - Romeo (mozzarella, zucchine e prosciutto cotto) - € 7,50
+            - Nduja (pomodoro, mozzarella e nduja DOP) - € 7,50
+            - Wurstel e Patatine Fritte (pomodoro, mozzarella, wurstel e patatine fritte) - € 7,50
+            - San Daniele (pomodoro, mozzarella e prosciutto crudo) - € 7,50
+            - Ortolana (mozzarella e verdure miste) - € 8,00
+            - Tonno e Pachino (mozzarella, pomodoro Pachino, tonno e peperoncino di Calabria) - € 8,00
+            - Tonno e Cipolla (pomodoro, mozzarella, tonno e cipolla di Tropea) - € 8,00
+            - Fiori e Alici (mozzarella, fiori di zucca e alici) - € 8,00
+            - Fiori e Prosciutto Cotto (mozzarella, fiori di zucca e prosciutto cotto) - € 8,00
+            - Bomba (pomodoro, mozzarella, patate, melanzane, zucchine e peperoni fritti) - € 8,00
+            - Mediterranea (pomodoro, mozzarella, tonno e carciofi) - € 8,00
+            - Broccoletti e Salsiccia (mozzarella, broccoletti ripassati e salsiccia di Norcia) - € 8,00
+            - Funghi Porcini (mozzarella, funghi porcini e prezzemolo) - € 8,00
+            - Diavola con Nduja (pomodoro, mozzarella, salame piccante DOP e nduja) - € 8,00
+            - Speck e Provola (mozzarella, speck e provola affumicata DOP) - € 8,00
+            - Verdemare (mozzarella, zucchine e gamberetti) - € 8,00
+            - Capricciosa (pomodoro, mozzarella, funghi champignon, carciofini, olive, prosciutto cotto e uova) - € 8,50
+            - Rosata (pomodoro, insalata, gamberetti e salsa rosa) - € 8,50
+            - Mozzarella di Bufala e Pomodoro Pachino (pomodoro, mozzarella di bufala DOP e pomodoro Pachino) - € 8,50
+            - Stracchino e Pancetta (mozzarella, stracchino e pancetta arrotolata) - € 8,50
+            - Obelix (mozzarella, fiori di zucca e prosciutto cotto) - € 8,50
+            - Bresaola (mozzarella, rucola, bresaola e scaglie di parmigiano) - € 8,50
+            - Love 4 Pizza (mozzarella, nduja e funghi porcini) - € 8,50
+            - Salmone (mozzarella, rucola e salmone affumicato) - € 8,50
+            - Calabra (mozzarella, pomodoro Pachino, funghi porcini, bresaola, rucola e scaglie di parmigiano) - € 9,00
+            - Gustosa (pomodoro, provola affumicata, speck, funghi porcini e prezzemolo) - € 9,00
+            
+            Fritti principali:
+            - Supplì - € 1,00
+            - Arancino Nduja - € 1,50
+            - Arancino Cacio e Pepe - € 1,50
+            - Crocchette di Patate - € 1,00
+            - Fiori di Zucca - € 1,80
+            - Patatine Fritte - € 3,00
+            
+            Regole di Risposta:
+            1. Consiglia SOLO prodotti presenti in questa lista. Se non ci sono o l'utente divaga, portalo cortesemente di nuovo sulle nostre pizze.
+            2. Genera risposte formattate usando grassetti per i nomi dei piatti (es. **Margherita** o **Calabra**) ed elenchi puntati per renderli più leggibili.
+            3. Proponi al massimo 2 o 3 opzioni per risposta. Mantieni uno stile cordiale e veloce.
+            `;
+
+            let chatHistory = [];
+            let isChatLoading = false;
+
+            function safeMarkdown(text) {
+                // Previene attacchi XSS
+                let safe = text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+                
+                // Converte **testo** in grassetto HTML
+                safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                // Converte elenchi puntati (- o *) in elementi di lista HTML
+                safe = safe.replace(/^\s*[-*•]\s+(.*)$/gm, '<li class="ml-4 list-disc">$1</li>');
+                
+                // Converte i ritorni a capo in tag <br>
+                safe = safe.replace(/\n/g, '<br>');
+                
+                return safe;
+            }
+
+            function toggleChat() {
+                aiChatbot.classList.toggle('show');
+                if (aiChatbot.classList.contains('show')) {
+                    chatInput.focus();
+                    aiToggleBtn.style.transform = 'scale(0)';
+                } else {
+                    aiToggleBtn.style.transform = 'scale(1)';
+                }
+            }
+
+            aiToggleBtn.addEventListener('click', toggleChat);
+            closeChatBtn.addEventListener('click', toggleChat);
+
+            function setChatLoading(loading) {
+                isChatLoading = loading;
+                if (loading) {
+                    typingIndicator.classList.add('active');
+                    chatInput.disabled = true;
+                    sendMessageBtn.disabled = true;
+                    sendMessageBtn.classList.add('opacity-50');
+                } else {
+                    typingIndicator.classList.remove('active');
+                    chatInput.disabled = false;
+                    sendMessageBtn.disabled = false;
+                    sendMessageBtn.classList.remove('opacity-50');
+                }
+            }
+
+            function addMessage(text, sender) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message', sender);
+                
+                if (sender === 'bot') {
+                    msgDiv.innerHTML = safeMarkdown(text);
+                } else {
+                    msgDiv.textContent = text;
+                }
+                
+                chatMessages.insertBefore(msgDiv, typingIndicator);
+                scrollToBottom();
+            }
+
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Pulisce e ripristina l'alternanza corretta dei ruoli nella history in caso di interruzioni
+            function cleanHistory() {
+                let clean = [];
+                let expectedRole = 'user';
+                for (let i = 0; i < chatHistory.length; i++) {
+                    if (chatHistory[i].role === expectedRole) {
+                        clean.push(chatHistory[i]);
+                        expectedRole = expectedRole === 'user' ? 'model' : 'user';
+                    }
+                }
+                // Si assicura che l'ultimo messaggio inviato all'API sia dell'utente
+                while (clean.length > 0 && clean[clean.length - 1].role !== 'user') {
+                    clean.pop();
+                }
+                chatHistory = clean;
+            }
+
+            async function handleSendMessage() {
+                if (isChatLoading) return;
+                
+                const messageText = chatInput.value.trim();
+                if (!messageText) return;
+
+                // 1. Aggiunge il messaggio utente all'interfaccia
+                addMessage(messageText, 'user');
+                chatInput.value = '';
+                
+                // 2. Mostra l'indicatore di caricamento e blocca gli input
+                setChatLoading(true);
+                scrollToBottom();
+
+                // 3. Prepara la history in modo pulito
+                chatHistory.push({ role: "user", parts: [{ text: messageText }] });
+                cleanHistory();
+                
+                // Riduce la cronologia se diventa troppo lunga per non rallentare l'API
+                if (chatHistory.length > 8) {
+                    chatHistory = chatHistory.slice(-8);
+                    cleanHistory();
+                }
+
+                const payload = {
+                    contents: chatHistory,
+                    systemInstruction: {
+                        parts: [{ text: menuContext }]
+                    }
+                };
+
+                try {
+                    // 4. Esegue la chiamata alle API Gemini
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const botResponse = result.candidates[0].content.parts[0].text;
+                        
+                        // 5. Ripristina gli input e scrive la risposta dell'IA
+                        setChatLoading(false);
+                        addMessage(botResponse, 'bot');
+                        
+                        // Aggiorna la cronologia
+                        chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+                    } else {
+                        throw new Error("No response from AI");
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    setChatLoading(false);
+                    addMessage("Scusa, ho avuto un piccolo contrattacco di fame e mi sono confuso. Potresti ripetere la richiesta?", 'bot');
+                    // Rimuove l'ultimo messaggio se è andato in errore
+                    chatHistory.pop();
+                }
+            }
+
+            sendMessageBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+
+            // Gestione dei Quick Replies cliccabili
+            document.querySelectorAll('.quick-reply-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (isChatLoading) return;
+                    const msg = btn.getAttribute('data-msg');
+                    chatInput.value = msg;
+                    handleSendMessage();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
